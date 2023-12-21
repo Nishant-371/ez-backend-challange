@@ -193,7 +193,7 @@ class EmailVerificationResource(Resource):
             if user:
                 user.email_verified = True
                 db.session.commit()
-                return redirect(url_for('verification_success'))
+                return {'message': 'verified'}, 201
             else:
                 return {'error': 'Invalid token'}, 400
         except jwt.ExpiredSignatureError:
