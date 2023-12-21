@@ -23,8 +23,8 @@ app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'd8b8c772ea1035'
-app.config['MAIL_PASSWORD'] = '0c62e1b3b13df2'
+app.config['MAIL_USERNAME'] = '***********'
+app.config['MAIL_PASSWORD'] = '***********'
 mail = Mail(app)
 
 # Configure SQLAlchemy
@@ -39,9 +39,6 @@ class User(db.Model):
     password = db.Column(db.String(255), nullable=False)
     userType = db.Column(db.String(50), nullable=False)
     email_verified = db.Column(db.Boolean, default=False)
-
-    # files = db.relationship('File', backref=db.backref('user', lazy=True))
-    # user = db.relationship('User', backref=db.backref('user_files', lazy=True))
 
 
     def __init__(self, email, password, userType, email_verified=False):
@@ -61,7 +58,7 @@ class File(db.Model):
     filepath = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_type = db.Column(db.String(50), nullable=False)
-    # user_type = db.Column(db.String(20), db.ForeignKey('user.userType'), nullable=False)
+    
     user = db.relationship('User', backref=db.backref('files', lazy=True))
 
     def __repr__(self):
