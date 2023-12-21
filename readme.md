@@ -61,7 +61,7 @@ Make sure you have the following installed before running the project:
 
 ### Endpoints
 
-1. Home Page:
+1. Home Page:  
    Endpoint: /
    Method: GET
    Description: Displays a welcome message.
