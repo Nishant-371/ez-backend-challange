@@ -9,8 +9,6 @@ Welcome to the Flask File Sharing API! This project provides a Flask-based backe
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Configuration](#configuration)
-- [Usage](#usage)
 - [Endpoints](#endpoints)
 
 ## Introduction
@@ -70,7 +68,7 @@ Make sure you have the following installed before running the project:
    Endpoint: /signup  
    Method: POST  
    Description: Registers a new user.  
-   Request Body: JSON with email, password, and userType.  
+   Request Body: JSON with email, password, and userType.
 
 3. User Login:  
    Endpoint: /login  
