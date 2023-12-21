@@ -19,12 +19,12 @@ app.config['JWT_SECRET_KEY'] = 'your_jwt_secret_key'
 jwt = JWTManager(app)
 
 # Configure Flask Mail
-app.config['MAIL_SERVER'] = 'your_mail_server'
+app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'your_mail_username'
-app.config['MAIL_PASSWORD'] = 'your_mail_password'
+app.config['MAIL_USERNAME'] = 'd8b8c772ea1035'
+app.config['MAIL_PASSWORD'] = '0c62e1b3b13df2'
 mail = Mail(app)
 
 # Configure SQLAlchemy
@@ -41,6 +41,8 @@ class User(db.Model):
     email_verified = db.Column(db.Boolean, default=False)
 
     # files = db.relationship('File', backref=db.backref('user', lazy=True))
+    # user = db.relationship('User', backref=db.backref('user_files', lazy=True))
+
 
     def __init__(self, email, password, userType, email_verified=False):
         self.email = email
@@ -59,7 +61,7 @@ class File(db.Model):
     filepath = db.Column(db.String(255), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user_type = db.Column(db.String(50), nullable=False)
-
+    # user_type = db.Column(db.String(20), db.ForeignKey('user.userType'), nullable=False)
     user = db.relationship('User', backref=db.backref('files', lazy=True))
 
     def __repr__(self):
@@ -111,42 +113,7 @@ def homepage():
 
 
 
-class UserSignupResource(Resource):
-    def post(self):
-        args = user_signup_parser.parse_args()
-
-        existing_user = User.query.filter_by(email=args['email']).first()
-        if existing_user:
-            return {'error': 'User already exists'}, 400
-
-        hashed_password = bcrypt.generate_password_hash(args['password']).decode('utf-8')
-
-        new_user = User(email=args['email'], password=hashed_password, userType=args['userType'] ,email_verified=False)
-        db.session.add(new_user)
-        db.session.commit()
-
-        send_verification_email(new_user.id, new_user.email)
-
-        return {'message': 'User registered successfully. Check your email for verification.'}, 201
-
-# class FileUploadResource(Resource):
-#     @jwt_required()
-#     def post(self):
-#         args = file_upload_parser.parse_args()
-#         uploaded_file = args['file']
-
-#         if args['userType'] != "operation user":
-#             return {'error': 'Not authorized to upload file'}, 400
-
-#         # ... (existing code)
-
-#         new_file = File(filename=filename, filetype=filename.split('.')[-1], filepath=file_path, user_id=get_jwt_identity(), user_type=args['userType'])
-#         db.session.add(new_file)
-#         db.session.commit()
-
-#         return {'file_id': new_file.id}, 201
-
-# # Resources
+ # Resources
 class UserSignupResource(Resource):
     def post(self):
         data=request.get_json(force=True)
@@ -158,8 +125,8 @@ class UserSignupResource(Resource):
             return {'error': 'User already exists'}, 400
 
         hashed_password = bcrypt.generate_password_hash(args['password']).decode('utf-8')
+        new_user = User(email=args['email'], password=hashed_password, userType=args['userType'], email_verified=False)
 
-        new_user = User(email=args['email'], password=hashed_password, email_verified=False)
         db.session.add(new_user)
         db.session.commit()
 
@@ -252,7 +219,7 @@ def send_verification_email(user_id, email):
     verification_token = create_access_token(identity=user_id, expires_delta=datetime.timedelta(days=1))
     verification_url = f'https://yourdomain.com/verify-email/{verification_token}'
 
-    msg = Message('Email Verification', sender='your_email@example.com', recipients=[email])
+    msg = Message('Email Verification', sender='taliwalnishant@gmail.com', recipients=[email])
     msg.body = f'Click the following link to verify your email: {verification_url}'
     mail.send(msg)
 
